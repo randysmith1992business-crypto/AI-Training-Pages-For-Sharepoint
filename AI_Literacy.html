@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Check: Spot the Incorrect Answer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0F3;
+    --card:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#4A5876;
+    --teal:#2F6B69;
+    --teal-dark:#1F4A48;
+    --rule:#D8DCE4;
+    --wrong:#B24B3C;
+    --right-bg:#E7F0EA;
+    --wrong-bg:#F6E9E6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:680px;
+    margin:0 auto;
+    padding:28px 20px 48px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:24px;
+    margin:2px 0 6px;
+    color:var(--ink);
+  }
+  .subhead{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:24px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:26px 26px 22px;
+    margin-bottom:22px;
+  }
+  .qhead{
+    display:flex;
+    align-items:flex-start;
+    margin-bottom:16px;
+  }
+  .qnum{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;height:28px;
+    background:var(--ink);
+    color:#fff;
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:14px;
+    border-radius:50%;
+    margin-right:10px;
+    flex-shrink:0;
+  }
+  .qtext{
+    font-family:'Source Serif 4',serif;
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    padding-top:2px;
+  }
+  .find-tag{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--wrong);
+    background:var(--wrong-bg);
+    border:1px solid #E6BEB6;
+    padding:3px 8px;
+    border-radius:5px;
+    margin-bottom:12px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    padding:13px 16px;
+    border:1.5px solid var(--rule);
+    background:#FBFBFC;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    width:100%;
+  }
+  .option:hover{border-color:var(--teal);}
+  .option.correct{border-color:var(--wrong); background:var(--wrong-bg); font-weight:600;}
+  .option.incorrect{border-color:var(--teal); background:#EEF6F4;}
+  .option[disabled]{cursor:default;}
+  .feedback{
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:7px;
+    font-size:14px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.right{background:var(--right-bg); color:var(--teal-dark); border:1px solid #BFDBCF;}
+  .feedback.wrong{background:var(--wrong-bg); color:var(--wrong); border:1px solid #E6BEB6;}
+  .feedback b{display:block; margin-bottom:4px;}
+  .retry-btn{
+    margin-top:14px;
+    background:none;
+    border:1.5px solid var(--ink-soft);
+    color:var(--ink-soft);
+    padding:8px 14px;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    display:none;
+  }
+  .retry-btn.show{display:inline-block;}
+  .retry-btn:hover{border-color:var(--teal); color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Knowledge Check</div>
+  <h1>Spot the Incorrect Answer</h1>
+  <div class="subhead">Each question has one response that does <em>not</em> reflect appropriate AI use. Select the one you think is incorrect.</div>
+
+  <!-- Q1 -->
+  <div class="card" data-qid="1">
+    <div class="qhead">
+      <span class="qnum">1</span>
+      <span class="qtext">A student says, &ldquo;I keep asking AI for help, but the answers are confusing and don&rsquo;t really connect to my course materials.&rdquo; Which response is the single incorrect answer?</span>
+    </div>
+    <div class="options" id="opts1">
+      <button class="option" data-correct="false">Coach the student to provide more specific context in the prompt.</button>
+      <button class="option" data-correct="false">Encourage the student to compare AI responses with course materials.</button>
+      <button class="option" data-correct="true">Tell the student to keep using the first AI response because AI is usually more accurate than course resources.</button>
+      <button class="option" data-correct="false">Suggest asking AI to explain the concept in simpler terms or provide an example.</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+    <button class="retry-btn" id="retry1">Try again</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card" data-qid="2">
+    <div class="qhead">
+      <span class="qnum">2</span>
+      <span class="qtext">A student is preparing for an assessment and wants to use AI to study. Which option is the single incorrect answer?</span>
+    </div>
+    <div class="options" id="opts2">
+      <button class="option" data-correct="false">Ask AI to quiz them on key concepts from their study notes.</button>
+      <button class="option" data-correct="false">Ask AI to explain a difficult topic in simpler language.</button>
+      <button class="option" data-correct="true">Ask AI to answer test questions directly so they can memorize the responses.</button>
+      <button class="option" data-correct="false">Ask AI for an example that helps them understand how a concept works.</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+    <button class="retry-btn" id="retry2">Try again</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="card" data-qid="3">
+    <div class="qhead">
+      <span class="qnum">3</span>
+      <span class="qtext">A Peer Coach is helping a student strengthen their AI prompts. Which coaching move is the single incorrect answer?</span>
+    </div>
+    <div class="options" id="opts3">
+      <button class="option" data-correct="false">Encourage the student to revise prompts based on the quality of the AI response.</button>
+      <button class="option" data-correct="false">Remind the student that AI can be inaccurate, biased, or misaligned with course expectations.</button>
+      <button class="option" data-correct="false">Guide the student to verify AI responses with course materials or an instructor/program mentor.</button>
+      <button class="option" data-correct="true">Tell the student that if the AI response sounds confident, it does not need to be checked.</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+    <button class="retry-btn" id="retry3">Try again</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  function wireUp(n, correctText, incorrectText){
+    var opts = document.getElementById('opts'+n).querySelectorAll('.option');
+    var fb = document.getElementById('fb'+n);
+    var retry = document.getElementById('retry'+n);
+
+    function lock(){ opts.forEach(function(o){ o.disabled = true; }); }
+    function unlock(){
+      opts.forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('correct','incorrect');
+      });
+      fb.className = 'feedback';
+      fb.textContent = '';
+      retry.classList.remove('show');
+    }
+
+    opts.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var isTheFlaggedOne = btn.dataset.correct === 'true';
+        lock();
+        if(isTheFlaggedOne){
+          btn.classList.add('correct');
+          fb.innerHTML = '<b>Correct \u2014 that\u2019s the incorrect answer.</b> ' + correctText;
+          fb.className = 'feedback show right';
+        } else {
+          btn.classList.add('incorrect');
+          opts.forEach(function(o){
+            if(o.dataset.correct === 'true') o.classList.add('correct');
+          });
+          fb.innerHTML = '<b>Not the one.</b> ' + incorrectText;
+          fb.className = 'feedback show wrong';
+          retry.classList.add('show');
+        }
+      });
+    });
+
+    retry.addEventListener('click', unlock);
+  }
+
+  wireUp(1,
+    'AI responses are not automatically more reliable than course materials, especially when they don\'t connect to what\'s being taught. The better path is refining the prompt, asking for a simpler explanation or example, and checking the answer against course content \u2014 not defaulting to the first response as authoritative.',
+    'That response describes a genuinely useful coaching move for improving AI output or connecting it back to the course. Look for the option that treats an unreliable AI answer as trustworthy by default.'
+  );
+
+  wireUp(2,
+    'Having AI generate test answers to memorize turns studying into recall of AI output rather than actual understanding \u2014 and it edges toward using AI to produce assessment content, which isn\'t appropriate. Quizzing, simplified explanations, and examples all build real understanding instead.',
+    'That option is a legitimate study use of AI \u2014 it supports understanding rather than replacing it. Look for the option where AI is asked to produce answers meant to be memorized rather than understood.'
+  );
+
+  wireUp(3,
+    'A confident-sounding AI response is not the same as an accurate one. Part of prompt coaching is teaching students to verify claims regardless of tone, since AI can sound certain while still being wrong, biased, or off from course expectations.',
+    'That\'s a sound part of prompt coaching. Look for the option that tells the student confidence in tone is a substitute for actually checking the response.'
+  );
+})();
+</script>
+</body>
+</html>
