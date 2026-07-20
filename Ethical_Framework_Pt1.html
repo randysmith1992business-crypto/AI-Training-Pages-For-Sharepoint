@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C.O.A.C.H. Ethical AI Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0F3;
+    --card:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#4A5876;
+    --teal:#2F6B69;
+    --teal-dark:#1F4A48;
+    --amber:#BD8A2E;
+    --rule:#D8DCE4;
+    --wrong:#B24B3C;
+    --right-bg:#E7F0EA;
+    --wrong-bg:#F6E9E6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:800px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,30px);
+    margin:2px 0 6px;
+    color:var(--ink);
+  }
+  .subhead{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:26px;
+    max-width:560px;
+  }
+
+  /* Framework cards */
+  .framework{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:36px;
+  }
+  .letter-card{
+    display:flex;
+    align-items:stretch;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:box-shadow .15s, border-color .15s;
+  }
+  .letter-card:hover{
+    border-color:var(--teal);
+    box-shadow:0 2px 10px rgba(31,74,72,0.08);
+  }
+  .letter-badge{
+    flex-shrink:0;
+    width:64px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--ink);
+    color:#fff;
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:28px;
+  }
+  .letter-body{
+    flex:1;
+    padding:14px 18px;
+  }
+  .letter-title{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--ink);
+    margin-bottom:4px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .expand-icon{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    transition:transform .2s;
+  }
+  .letter-card.open .expand-icon{ transform:rotate(180deg); }
+  .letter-desc{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .25s ease, margin-top .25s ease;
+  }
+  .letter-card.open .letter-desc{
+    max-height:120px;
+    margin-top:6px;
+  }
+
+  /* Knowledge check */
+  .kc-header{
+    border-top:2px solid var(--ink);
+    padding-top:24px;
+    margin-bottom:8px;
+  }
+  .kc-eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .kc-title{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--ink);
+    margin:2px 0 6px;
+  }
+  .kc-instructions{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:20px;
+  }
+  .kc-instructions .legend{
+    display:inline-flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:8px;
+  }
+  .legend-chip{
+    font-size:11.5px;
+    font-weight:600;
+    background:#fff;
+    border:1px solid var(--rule);
+    color:var(--ink);
+    padding:3px 9px;
+    border-radius:12px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:20px 22px;
+    margin-bottom:14px;
+  }
+  .scenario-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .scenario-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:26px;height:26px;
+    background:var(--ink);
+    color:#fff;
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:13px;
+    border-radius:50%;
+    flex-shrink:0;
+  }
+  .scenario-text{
+    flex:1 1 380px;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  select.match-select{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:9px 10px;
+    border-radius:6px;
+    border:1.5px solid var(--rule);
+    background:#FBFBFC;
+    color:var(--ink);
+    min-width:190px;
+  }
+  select.match-select.correct{border-color:var(--teal-dark); background:var(--right-bg);}
+  select.match-select.incorrect{border-color:var(--wrong); background:var(--wrong-bg);}
+
+  .check-btn{
+    margin-top:8px;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    padding:11px 20px;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .check-btn:hover{background:var(--teal-dark);}
+
+  .feedback{
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:7px;
+    font-size:14px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.right{background:var(--right-bg); color:var(--teal-dark); border:1px solid #BFDBCF;}
+  .feedback.wrong{background:var(--wrong-bg); color:var(--wrong); border:1px solid #E6BEB6;}
+  .feedback b{display:block; margin-bottom:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Ethical AI Framework</div>
+  <h1>The C.O.A.C.H. Framework</h1>
+  <div class="subhead">Tap each letter to reveal what it stands for and how it applies to ethical AI use in Peer Coaching.</div>
+
+  <div class="framework" id="framework">
+    <div class="letter-card" data-letter="C">
+      <div class="letter-badge">C</div>
+      <div class="letter-body">
+        <div class="letter-title">Clarity <span class="expand-icon">&#9662;</span></div>
+        <div class="letter-desc">Ensure inputs and outputs are clear, accurate, and understandable; avoid misleading or ambiguous information.</div>
+      </div>
+    </div>
+    <div class="letter-card" data-letter="O">
+      <div class="letter-badge">O</div>
+      <div class="letter-body">
+        <div class="letter-title">Ownership <span class="expand-icon">&#9662;</span></div>
+        <div class="letter-desc">Take responsibility for how AI is used, including verifying results and being accountable for decisions.</div>
+      </div>
+    </div>
+    <div class="letter-card" data-letter="A">
+      <div class="letter-badge">A</div>
+      <div class="letter-body">
+        <div class="letter-title">Alignment <span class="expand-icon">&#9662;</span></div>
+        <div class="letter-desc">Use AI in ways that align with ethical standards, institutional policies, and intended purposes.</div>
+      </div>
+    </div>
+    <div class="letter-card" data-letter="C2">
+      <div class="letter-badge">C</div>
+      <div class="letter-body">
+        <div class="letter-title">Confidentiality <span class="expand-icon">&#9662;</span></div>
+        <div class="letter-desc">Protect sensitive data and privacy; never input or share restricted or personal information improperly.</div>
+      </div>
+    </div>
+    <div class="letter-card" data-letter="H">
+      <div class="letter-badge">H</div>
+      <div class="letter-body">
+        <div class="letter-title">Human-Centeredness <span class="expand-icon">&#9662;</span></div>
+        <div class="letter-desc">Prioritize human judgment, well-being, and fairness&mdash;AI supports decisions, not replaces responsibility.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kc-header">
+    <div class="kc-eyebrow">Knowledge Check</div>
+    <div class="kc-title">Match the Scenario to the Principle</div>
+    <div class="kc-instructions">
+      Read each scenario and select the C.O.A.C.H. principle it best represents.
+      <div class="legend">
+        <span class="legend-chip">C &mdash; Clarity</span>
+        <span class="legend-chip">O &mdash; Ownership</span>
+        <span class="legend-chip">A &mdash; Alignment</span>
+        <span class="legend-chip">C2 &mdash; Confidentiality</span>
+        <span class="legend-chip">H &mdash; Human-Centeredness</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="matchList">
+      <div class="scenario-row" data-answer="C">
+        <span class="scenario-num">1</span>
+        <span class="scenario-text">A Peer Coach uses AI to simplify a confusing explanation, then checks that the wording is accurate and easy for the student to understand.</span>
+        <select class="match-select">
+          <option value="">Select a principle&hellip;</option>
+          <option value="C">C &mdash; Clarity</option>
+          <option value="O">O &mdash; Ownership</option>
+          <option value="A">A &mdash; Alignment</option>
+          <option value="C2">C2 &mdash; Confidentiality</option>
+          <option value="H">H &mdash; Human-Centeredness</option>
+        </select>
+      </div>
+      <div class="scenario-row" data-answer="O">
+        <span class="scenario-num">2</span>
+        <span class="scenario-text">A Peer Coach reviews an AI-generated study plan before sharing it and takes responsibility for correcting anything inaccurate or unhelpful.</span>
+        <select class="match-select">
+          <option value="">Select a principle&hellip;</option>
+          <option value="C">C &mdash; Clarity</option>
+          <option value="O">O &mdash; Ownership</option>
+          <option value="A">A &mdash; Alignment</option>
+          <option value="C2">C2 &mdash; Confidentiality</option>
+          <option value="H">H &mdash; Human-Centeredness</option>
+        </select>
+      </div>
+      <div class="scenario-row" data-answer="A">
+        <span class="scenario-num">3</span>
+        <span class="scenario-text">A Peer Coach uses AI only in ways that follow WGU expectations and support learning instead of completing work for the student.</span>
+        <select class="match-select">
+          <option value="">Select a principle&hellip;</option>
+          <option value="C">C &mdash; Clarity</option>
+          <option value="O">O &mdash; Ownership</option>
+          <option value="A">A &mdash; Alignment</option>
+          <option value="C2">C2 &mdash; Confidentiality</option>
+          <option value="H">H &mdash; Human-Centeredness</option>
+        </select>
+      </div>
+      <div class="scenario-row" data-answer="C2">
+        <span class="scenario-num">4</span>
+        <span class="scenario-text">A Peer Coach refuses to enter a student&rsquo;s ID number, grade details, or personal information into a public AI tool.</span>
+        <select class="match-select">
+          <option value="">Select a principle&hellip;</option>
+          <option value="C">C &mdash; Clarity</option>
+          <option value="O">O &mdash; Ownership</option>
+          <option value="A">A &mdash; Alignment</option>
+          <option value="C2">C2 &mdash; Confidentiality</option>
+          <option value="H">H &mdash; Human-Centeredness</option>
+        </select>
+      </div>
+      <div class="scenario-row" data-answer="H">
+        <span class="scenario-num">5</span>
+        <span class="scenario-text">A Peer Coach uses AI to prepare thoughtful questions, but still listens, encourages, and supports the student through a real coaching conversation.</span>
+        <select class="match-select">
+          <option value="">Select a principle&hellip;</option>
+          <option value="C">C &mdash; Clarity</option>
+          <option value="O">O &mdash; Ownership</option>
+          <option value="A">A &mdash; Alignment</option>
+          <option value="C2">C2 &mdash; Confidentiality</option>
+          <option value="H">H &mdash; Human-Centeredness</option>
+        </select>
+      </div>
+    </div>
+    <button class="check-btn" id="checkMatches">Check my answers</button>
+    <div class="feedback" id="fbMatches"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  // Expandable framework cards
+  document.querySelectorAll('.letter-card').forEach(function(c){
+    c.addEventListener('click', function(){
+      c.classList.toggle('open');
+    });
+  });
+
+  // Matching knowledge check
+  var checkBtn = document.getElementById('checkMatches');
+  var fb = document.getElementById('fbMatches');
+  checkBtn.addEventListener('click', function(){
+    var rows = document.querySelectorAll('#matchList .scenario-row');
+    var allAnswered = true;
+    var allCorrect = true;
+    var correctCount = 0;
+    rows.forEach(function(row){
+      var sel = row.querySelector('select');
+      var answer = row.dataset.answer;
+      sel.classList.remove('correct','incorrect');
+      if(!sel.value){ allAnswered = false; return; }
+      if(sel.value === answer){
+        sel.classList.add('correct');
+        correctCount++;
+      } else {
+        sel.classList.add('incorrect');
+        allCorrect = false;
+      }
+    });
+    if(!allAnswered){
+      fb.innerHTML = '<b>Almost there.</b> Please select a principle for every scenario before checking.';
+      fb.className = 'feedback show wrong';
+      return;
+    }
+    if(allCorrect){
+      fb.innerHTML = '<b>All 5 correct.</b> You matched every scenario to its C.O.A.C.H. principle correctly.';
+      fb.className = 'feedback show right';
+    } else {
+      fb.innerHTML = '<b>' + correctCount + ' of 5 correct.</b> Review the rows marked in red and try again.';
+      fb.className = 'feedback show wrong';
+    }
+  });
+})();
+</script>
+</body>
+</html>
