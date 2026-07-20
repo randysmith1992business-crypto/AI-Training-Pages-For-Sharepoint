@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Check: Coaching Through AI Requests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0F3;
+    --card:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#4A5876;
+    --teal:#2F6B69;
+    --teal-dark:#1F4A48;
+    --rule:#D8DCE4;
+    --wrong:#B24B3C;
+    --right-bg:#E7F0EA;
+    --wrong-bg:#F6E9E6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:16px;
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    font-weight:600;
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:clamp(22px,4vw,28px);
+    margin:4px 0 0;
+    color:var(--ink);
+  }
+  .meter{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    min-width:150px;
+  }
+  .meter-label{
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .meter-track{
+    width:150px;
+    height:8px;
+    background:var(--rule);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .meter-fill{
+    height:100%;
+    width:0%;
+    background:var(--teal);
+    transition:width .5s ease;
+  }
+  .meter-count{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+    font-variant-numeric:tabular-nums;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:26px 26px 22px;
+    margin-bottom:22px;
+  }
+  .qnum{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;height:28px;
+    background:var(--ink);
+    color:#fff;
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:14px;
+    border-radius:50%;
+    margin-right:10px;
+    flex-shrink:0;
+  }
+  .qhead{
+    display:flex;
+    align-items:flex-start;
+    margin-bottom:16px;
+  }
+  .qtext{
+    font-family:'Source Serif 4',serif;
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    padding-top:2px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    padding:13px 16px;
+    border:1.5px solid var(--rule);
+    background:#FBFBFC;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    width:100%;
+  }
+  .option:hover{border-color:var(--teal);}
+  .option.correct{border-color:var(--teal-dark); background:var(--right-bg); font-weight:600;}
+  .option.incorrect{border-color:var(--wrong); background:var(--wrong-bg);}
+  .option[disabled]{cursor:default;}
+  .feedback{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:7px;
+    font-size:13.5px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.right{background:var(--right-bg); color:var(--teal-dark); border:1px solid #BFDBCF;}
+  .feedback.wrong{background:var(--wrong-bg); color:var(--wrong); border:1px solid #E6BEB6;}
+  .feedback b{display:block; margin-bottom:4px;}
+  .retry-btn{
+    margin-top:12px;
+    background:none;
+    border:1.5px solid var(--ink-soft);
+    color:var(--ink-soft);
+    padding:8px 14px;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    display:none;
+  }
+  .retry-btn.show{display:inline-block;}
+  .retry-btn:hover{border-color:var(--teal); color:var(--teal-dark);}
+  .summary{
+    text-align:center;
+    padding:26px;
+    border-radius:10px;
+    background:var(--ink);
+    color:#fff;
+    margin-top:8px;
+    display:none;
+  }
+  .summary.show{display:block;}
+  .summary .big{
+    font-family:'Source Serif 4',serif;
+    font-size:30px;
+    font-weight:700;
+  }
+  .summary p{color:#C9D2E3; font-size:14px; margin-top:8px;}
+  @media (prefers-reduced-motion: reduce){
+    .meter-fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="eyebrow">Knowledge Check</div>
+      <h1>Coaching Through AI Requests</h1>
+    </div>
+    <div class="meter">
+      <div class="meter-label">Progress</div>
+      <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+      <div class="meter-count" id="meterCount">0 of 5 answered</div>
+    </div>
+  </header>
+
+  <!-- Q1 -->
+  <div class="card" data-qid="1">
+    <div class="qhead">
+      <span class="qnum">1</span>
+      <span class="qtext">A student asks, &ldquo;Can AI just write my discussion post so I can turn something in?&rdquo; What is the best first response from a Peer Coach?</span>
+    </div>
+    <div class="options" id="opts1">
+      <button class="option" data-correct="false">&ldquo;No, that is cheating, and you should know better.&rdquo;</button>
+      <button class="option" data-correct="true">&ldquo;I can see you&rsquo;re trying to make progress. Let&rsquo;s focus on using AI to help you understand the topic and organize your own ideas.&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Sure, as long as you change a few words before submitting it.&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Ask AI to write it, then compare it with your course materials later.&rdquo;</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+    <button class="retry-btn" id="retry1">Try again</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card" data-qid="2">
+    <div class="qhead">
+      <span class="qnum">2</span>
+      <span class="qtext">Which prompt best reflects a learning-centered use of AI?</span>
+    </div>
+    <div class="options" id="opts2">
+      <button class="option" data-correct="false">&ldquo;Write my assessment response for me.&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Give me the answer to this restricted test question.&rdquo;</button>
+      <button class="option" data-correct="true">&ldquo;Explain this concept in a different way and give me an example so I can understand it.&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Create a final paper I can submit as my own work.&rdquo;</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+    <button class="retry-btn" id="retry2">Try again</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="card" data-qid="3">
+    <div class="qhead">
+      <span class="qnum">3</span>
+      <span class="qtext">A student shares an AI-generated paragraph and asks, &ldquo;Does this count as my work?&rdquo; Which reflective question would best help the student self-correct?</span>
+    </div>
+    <div class="options" id="opts3">
+      <button class="option" data-correct="true">&ldquo;What part of this response reflects your thinking?&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Did AI make it sound professional enough?&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Can you hide that AI was involved?&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Would you like me to rewrite it for you?&rdquo;</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+    <button class="retry-btn" id="retry3">Try again</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="card" data-qid="4">
+    <div class="qhead">
+      <span class="qnum">4</span>
+      <span class="qtext">When redirecting a student away from inappropriate AI use, what should the Peer Coach emphasize?</span>
+    </div>
+    <div class="options" id="opts4">
+      <button class="option" data-correct="false">Completing the task as quickly as possible.</button>
+      <button class="option" data-correct="false">Using AI to replace the student&rsquo;s own thinking.</button>
+      <button class="option" data-correct="true">Demonstrating the student&rsquo;s own understanding and long-term skill development.</button>
+      <button class="option" data-correct="false">Avoiding course resources because AI is easier to access.</button>
+    </div>
+    <div class="feedback" id="fb4"></div>
+    <button class="retry-btn" id="retry4">Try again</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="card" data-qid="5">
+    <div class="qhead">
+      <span class="qnum">5</span>
+      <span class="qtext">If a student continues requesting help that would violate academic integrity expectations, what should the Peer Coach do?</span>
+    </div>
+    <div class="options" id="opts5">
+      <button class="option" data-correct="false">Provide the answer once so the student can move forward.</button>
+      <button class="option" data-correct="true">Respectfully discontinue that line of support and redirect the student to university policies, course guidance, or appropriate academic resources.</button>
+      <button class="option" data-correct="false">Ignore the concern if the student seems stressed.</button>
+      <button class="option" data-correct="false">Use AI privately to generate the answer and explain it afterward.</button>
+    </div>
+    <div class="feedback" id="fb5"></div>
+    <button class="retry-btn" id="retry5">Try again</button>
+  </div>
+
+  <div class="summary" id="summary">
+    <div class="big" id="summaryScore">0 / 5</div>
+    <p>Nice work working through these coaching scenarios.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var results = {1:null,2:null,3:null,4:null,5:null};
+
+  var feedbackText = {
+    1: {
+      right: 'Naming the effort behind the request, without judgment, keeps the student engaged while steering the conversation toward using AI to support understanding rather than replace it.',
+      wrong: 'The best first response validates the student\'s intent to make progress while redirecting toward AI as a support for understanding, not a way to skip the work.'
+    },
+    2: {
+      right: 'This prompt asks AI to build understanding, not to produce work meant to be submitted as the student\'s own.',
+      wrong: 'A learning-centered prompt asks AI to support understanding \u2014 explaining or illustrating a concept \u2014 rather than generating content the student would submit as their own.'
+    },
+    3: {
+      right: 'This question turns the moment into a self-check, prompting the student to notice how much of the response is actually their own thinking rather than settling the question for them.',
+      wrong: 'A strong reflective question helps the student examine their own ownership of the work, rather than focusing on polish, concealment, or having someone else finish it.'
+    },
+    4: {
+      right: 'Redirection works best when it points back to what the assignment is actually for: the student\'s own understanding and the skills they\'re meant to build, not just getting something submitted.',
+      wrong: 'The goal of redirection isn\'t speed or avoidance \u2014 it\'s helping the student build genuine understanding and skills that will serve them beyond this one assignment.'
+    },
+    5: {
+      right: 'When a request keeps pushing past what\'s appropriate, the Peer Coach steps back from that specific line of support and points the student toward the policies and resources meant to guide this situation.',
+      wrong: 'Continuing to provide the answer, ignoring the concern, or working around the issue privately all cross the line. The appropriate move is to stop that line of support and redirect to policy and academic resources.'
+    }
+  };
+
+  function updateMeter(){
+    var done = Object.values(results).filter(function(v){return v !== null;}).length;
+    document.getElementById('meterFill').style.width = (done/5*100) + '%';
+    document.getElementById('meterCount').textContent = done + ' of 5 answered';
+    if(done === 5){
+      var correctCount = Object.values(results).filter(function(v){return v === true;}).length;
+      document.getElementById('summaryScore').textContent = correctCount + ' / 5';
+      document.getElementById('summary').classList.add('show');
+    }
+  }
+
+  function wireUp(n){
+    var opts = document.getElementById('opts'+n).querySelectorAll('.option');
+    var fb = document.getElementById('fb'+n);
+    var retry = document.getElementById('retry'+n);
+
+    function lock(){ opts.forEach(function(o){ o.disabled = true; }); }
+    function unlock(){
+      opts.forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('correct','incorrect');
+      });
+      fb.className = 'feedback';
+      fb.textContent = '';
+      retry.classList.remove('show');
+    }
+
+    opts.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var isCorrect = btn.dataset.correct === 'true';
+        lock();
+        if(isCorrect){
+          btn.classList.add('correct');
+          fb.innerHTML = '<b>Correct.</b> ' + feedbackText[n].right;
+          fb.className = 'feedback show right';
+        } else {
+          btn.classList.add('incorrect');
+          opts.forEach(function(o){
+            if(o.dataset.correct === 'true') o.classList.add('correct');
+          });
+          fb.innerHTML = '<b>Not quite.</b> ' + feedbackText[n].wrong;
+          fb.className = 'feedback show wrong';
+          retry.classList.add('show');
+        }
+        if(results[n] === null){
+          results[n] = isCorrect;
+          updateMeter();
+        }
+      });
+    });
+
+    retry.addEventListener('click', unlock);
+  }
+
+  for(var i=1;i<=5;i++){ wireUp(i); }
+})();
+</script>
+</body>
+</html>
