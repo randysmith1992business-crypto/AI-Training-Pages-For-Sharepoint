@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Using AI Ethically: A Self-Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0F3;
+    --card:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#4A5876;
+    --teal:#2F6B69;
+    --teal-dark:#1F4A48;
+    --amber:#BD8A2E;
+    --rule:#D8DCE4;
+    --wrong:#B24B3C;
+    --right-bg:#E7F0EA;
+    --wrong-bg:#F6E9E6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    line-height:1.5;
+    padding:0;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:16px;
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    font-weight:600;
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,32px);
+    margin:4px 0 0;
+    color:var(--ink);
+  }
+  .meter{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    min-width:150px;
+  }
+  .meter-label{
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .meter-track{
+    width:150px;
+    height:8px;
+    background:var(--rule);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .meter-fill{
+    height:100%;
+    width:0%;
+    background:var(--teal);
+    transition:width .5s ease;
+  }
+  .meter-count{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:26px 26px 22px;
+    margin-bottom:22px;
+  }
+  .qnum{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;height:28px;
+    background:var(--ink);
+    color:#fff;
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:14px;
+    border-radius:50%;
+    margin-right:10px;
+    flex-shrink:0;
+  }
+  .qhead{
+    display:flex;
+    align-items:flex-start;
+    margin-bottom:16px;
+  }
+  .qtext{
+    font-family:'Source Serif 4',serif;
+    font-size:18px;
+    font-weight:600;
+    color:var(--ink);
+    padding-top:2px;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    padding:13px 16px;
+    border:1.5px solid var(--rule);
+    background:#FBFBFC;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .option:hover{border-color:var(--teal);}
+  .option.selected{border-color:var(--teal); background:#EEF6F4;}
+  .option.correct{border-color:var(--teal-dark); background:var(--right-bg); font-weight:600;}
+  .option.incorrect{border-color:var(--wrong); background:var(--wrong-bg);}
+  .option[disabled]{cursor:default;}
+
+  .feedback{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:7px;
+    font-size:13.5px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.right{background:var(--right-bg); color:var(--teal-dark); border:1px solid #BFDBCF;}
+  .feedback.wrong{background:var(--wrong-bg); color:var(--wrong); border:1px solid #E6BEB6;}
+
+  .match-row{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:12px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .match-row:last-child{border-bottom:none;}
+  .match-left{
+    font-size:14.5px;
+    color:var(--ink);
+    max-width:230px;
+  }
+  .match-left b{color:var(--teal-dark);}
+  select.match-select{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:9px 10px;
+    border-radius:6px;
+    border:1.5px solid var(--rule);
+    background:#FBFBFC;
+    color:var(--ink);
+  }
+  select.match-select.correct{border-color:var(--teal-dark); background:var(--right-bg);}
+  select.match-select.incorrect{border-color:var(--wrong); background:var(--wrong-bg);}
+
+  .check-btn{
+    margin-top:16px;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .check-btn:hover{background:var(--teal-dark);}
+  .check-btn:disabled{background:var(--rule); color:var(--ink-soft); cursor:not-allowed;}
+
+  textarea.reflect{
+    width:100%;
+    min-height:110px;
+    padding:12px 14px;
+    border:1.5px solid var(--rule);
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    resize:vertical;
+    background:#FBFBFC;
+  }
+  textarea.reflect:focus{outline:2px solid var(--teal); border-color:transparent;}
+
+  .reveal-btn{
+    margin-top:12px;
+    background:none;
+    border:1.5px solid var(--teal-dark);
+    color:var(--teal-dark);
+    padding:9px 16px;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .reveal-btn:hover{background:var(--right-bg);}
+
+  .model-answer{
+    margin-top:14px;
+    padding:16px 18px;
+    background:#F5F6F8;
+    border-left:3px solid var(--teal);
+    border-radius:0 7px 7px 0;
+    font-size:14px;
+    color:var(--ink-soft);
+    display:none;
+  }
+  .model-answer.show{display:block;}
+  .model-answer p{margin:0 0 10px;}
+  .model-answer p:last-child{margin-bottom:0;}
+  .model-answer .say{
+    font-style:italic;
+    color:var(--ink);
+    display:block;
+    margin:8px 0;
+    padding:10px 12px;
+    background:#fff;
+    border-radius:5px;
+  }
+
+  .summary{
+    text-align:center;
+    padding:26px;
+    border-radius:10px;
+    background:var(--ink);
+    color:#fff;
+    margin-top:8px;
+    display:none;
+  }
+  .summary.show{display:block;}
+  .summary .big{
+    font-family:'Source Serif 4',serif;
+    font-size:30px;
+    font-weight:700;
+  }
+  .summary p{color:#C9D2E3; font-size:14px; margin-top:8px;}
+
+  @media (prefers-reduced-motion: reduce){
+    .meter-fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="eyebrow">Academic Integrity &middot; AI Use</div>
+      <h1>Using AI Ethically:<br>A Self-Check</h1>
+    </div>
+    <div class="meter">
+      <div class="meter-label">Progress</div>
+      <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+      <div class="meter-count" id="meterCount">0 of 4 checked</div>
+    </div>
+  </header>
+
+  <!-- Q1 -->
+  <div class="card" data-qid="1">
+    <div class="qhead">
+      <span class="qnum">1</span>
+      <span class="qtext">A student asks AI to explain the difference between correlation and causation after first writing down what they already understand. Which category best describes this use of AI?</span>
+    </div>
+    <div class="options" id="opts1">
+      <button class="option" data-correct="false">Unethical use because AI should never explain concepts.</button>
+      <button class="option" data-correct="true">Ethical use because the student is using AI for concept support and learning.</button>
+      <button class="option" data-correct="false">Unethical use because any AI explanation replaces original thinking.</button>
+      <button class="option" data-correct="false">Ethical use because AI may complete academic work if the student reviews it later.</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card" data-qid="2">
+    <div class="qhead">
+      <span class="qnum">2</span>
+      <span class="qtext">Which student request best shows unethical or prohibited AI use?</span>
+    </div>
+    <div class="options" id="opts2">
+      <button class="option" data-correct="false">&ldquo;Can AI help me turn my notes into a study acronym?&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Can AI help me identify unclear wording in my paragraph?&rdquo;</button>
+      <button class="option" data-correct="true">&ldquo;Can AI write my paper so I can submit it as my own work?&rdquo;</button>
+      <button class="option" data-correct="false">&ldquo;Can AI help me brainstorm possible outline sections that I will develop myself?&rdquo;</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <!-- Q3 Matching -->
+  <div class="card" data-qid="3">
+    <div class="qhead">
+      <span class="qnum">3</span>
+      <span class="qtext">Match each ethical AI use to the best example.</span>
+    </div>
+    <div id="match3">
+      <div class="match-row" data-answer="B">
+        <div class="match-left"><b>Concept support</b> &mdash; select the matching example</div>
+        <select class="match-select">
+          <option value="">Choose an example&hellip;</option>
+          <option value="A">Brainstorming outline sections while the student develops the content</option>
+          <option value="B">Asking AI to explain the difference between two confusing concepts</option>
+          <option value="C">Creating an acronym or printable decision tree from student-created notes</option>
+          <option value="D">Drafting feedback on grammar, clarity, or structure</option>
+        </select>
+      </div>
+      <div class="match-row" data-answer="C">
+        <div class="match-left"><b>Study assistance</b> &mdash; select the matching example</div>
+        <select class="match-select">
+          <option value="">Choose an example&hellip;</option>
+          <option value="A">Brainstorming outline sections while the student develops the content</option>
+          <option value="B">Asking AI to explain the difference between two confusing concepts</option>
+          <option value="C">Creating an acronym or printable decision tree from student-created notes</option>
+          <option value="D">Drafting feedback on grammar, clarity, or structure</option>
+        </select>
+      </div>
+      <div class="match-row" data-answer="D">
+        <div class="match-left"><b>Skill-building</b> &mdash; select the matching example</div>
+        <select class="match-select">
+          <option value="">Choose an example&hellip;</option>
+          <option value="A">Brainstorming outline sections while the student develops the content</option>
+          <option value="B">Asking AI to explain the difference between two confusing concepts</option>
+          <option value="C">Creating an acronym or printable decision tree from student-created notes</option>
+          <option value="D">Drafting feedback on grammar, clarity, or structure</option>
+        </select>
+      </div>
+      <div class="match-row" data-answer="A">
+        <div class="match-left"><b>Idea generation</b> &mdash; select the matching example</div>
+        <select class="match-select">
+          <option value="">Choose an example&hellip;</option>
+          <option value="A">Brainstorming outline sections while the student develops the content</option>
+          <option value="B">Asking AI to explain the difference between two confusing concepts</option>
+          <option value="C">Creating an acronym or printable decision tree from student-created notes</option>
+          <option value="D">Drafting feedback on grammar, clarity, or structure</option>
+        </select>
+      </div>
+    </div>
+    <button class="check-btn" id="check3">Check matches</button>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <!-- Q4 Matching -->
+  <div class="card" data-qid="4">
+    <div class="qhead">
+      <span class="qnum">4</span>
+      <span class="qtext">Match each prohibited or risky AI behavior to the academic integrity concern it creates.</span>
+    </div>
+    <div id="match4">
+      <div class="match-row" data-answer="A">
+        <div class="match-left"><b>Submitting AI-generated work as original</b></div>
+        <select class="match-select">
+          <option value="">Choose a concern&hellip;</option>
+          <option value="A">Misrepresents authorship</option>
+          <option value="B">Prioritizes short-term completion over skill development</option>
+          <option value="C">Violates testing or assessment expectations</option>
+          <option value="D">Replaces the student's own academic work</option>
+        </select>
+      </div>
+      <div class="match-row" data-answer="C">
+        <div class="match-left"><b>Using AI during a restricted assessment</b></div>
+        <select class="match-select">
+          <option value="">Choose a concern&hellip;</option>
+          <option value="A">Misrepresents authorship</option>
+          <option value="B">Prioritizes short-term completion over skill development</option>
+          <option value="C">Violates testing or assessment expectations</option>
+          <option value="D">Replaces the student's own academic work</option>
+        </select>
+      </div>
+      <div class="match-row" data-answer="B">
+        <div class="match-left"><b>Copying and pasting AI responses without understanding</b></div>
+        <select class="match-select">
+          <option value="">Choose a concern&hellip;</option>
+          <option value="A">Misrepresents authorship</option>
+          <option value="B">Prioritizes short-term completion over skill development</option>
+          <option value="C">Violates testing or assessment expectations</option>
+          <option value="D">Replaces the student's own academic work</option>
+        </select>
+      </div>
+      <div class="match-row" data-answer="D">
+        <div class="match-left"><b>Asking AI to &ldquo;write my paper&rdquo;</b></div>
+        <select class="match-select">
+          <option value="">Choose a concern&hellip;</option>
+          <option value="A">Misrepresents authorship</option>
+          <option value="B">Prioritizes short-term completion over skill development</option>
+          <option value="C">Violates testing or assessment expectations</option>
+          <option value="D">Replaces the student's own academic work</option>
+        </select>
+      </div>
+    </div>
+    <button class="check-btn" id="check4">Check matches</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <!-- Q5 Reflection -->
+  <div class="card" data-qid="5">
+    <div class="qhead">
+      <span class="qnum">5</span>
+      <span class="qtext">Explain how a Peer Coach can use clear, non-judgmental language to help a student self-correct when the student is considering an inappropriate use of AI. Include one example of something the Peer Coach could say and explain how this supports long-term skill development instead of short-term completion.</span>
+    </div>
+    <textarea class="reflect" placeholder="Type your response here..."></textarea>
+    <button class="reveal-btn" id="reveal5">Show a model answer</button>
+    <div class="model-answer" id="model5">
+      <p><b>One approach:</b> the Peer Coach names the pattern rather than the person, keeps the tone curious instead of corrective, and redirects the student toward the learning goal behind the assignment.</p>
+      <span class="say">"It sounds like the deadline is the real pressure here. Want to try asking AI to explain the concept back to you first, so you're still the one doing the writing? That way you walk into the exam actually knowing the material."</span>
+      <p><b>Why it supports long-term development:</b> this framing doesn't shame the student for considering a shortcut &mdash; it acknowledges the real pressure (time, stress, confusion) while pointing back to what the assignment is actually for: building the skill, not just producing the artifact. A student who is talked through this once is more likely to make the same judgment call independently next time, which is the actual goal of coaching.</p>
+    </div>
+  </div>
+
+  <div class="summary" id="summary">
+    <div class="big" id="summaryScore">0 / 4</div>
+    <p>Great work walking through these scenarios. Review any items above to revisit the reasoning.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var checkedCount = 0;
+  var totalChecked = { q1:false, q2:false, q3:false, q4:false };
+
+  function updateMeter(){
+    var done = Object.values(totalChecked).filter(Boolean).length;
+    document.getElementById('meterFill').style.width = (done/4*100) + '%';
+    document.getElementById('meterCount').textContent = done + ' of 4 checked';
+    if(done === 4){
+      var correctCount = 0;
+      document.querySelectorAll('.card').forEach(function(card){
+        if(card.dataset.correctFlag === 'true') correctCount++;
+      });
+      document.getElementById('summaryScore').textContent = correctCount + ' / 4';
+      document.getElementById('summary').classList.add('show');
+    }
+  }
+
+  // Q1 & Q2 - single select buttons
+  [1,2].forEach(function(n){
+    var opts = document.getElementById('opts'+n).querySelectorAll('.option');
+    var fb = document.getElementById('fb'+n);
+    var card = document.querySelector('[data-qid="'+n+'"]');
+    opts.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(btn.disabled) return;
+        opts.forEach(function(o){ o.disabled = true; });
+        var isCorrect = btn.dataset.correct === 'true';
+        btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+        opts.forEach(function(o){
+          if(o.dataset.correct === 'true') o.classList.add('correct');
+        });
+        fb.textContent = isCorrect
+          ? 'Correct. Using AI to support understanding, after first engaging with the material yourself, keeps you as the author of your own thinking.'
+          : 'Not quite. The strongest answer treats AI as support for learning, used after genuine effort, not as a replacement for it.';
+        fb.className = 'feedback show ' + (isCorrect ? 'right' : 'wrong');
+        card.dataset.correctFlag = isCorrect ? 'true' : 'false';
+        totalChecked['q'+n] = true;
+        updateMeter();
+      });
+    });
+  });
+
+  // Q3 & Q4 - matching via select
+  [3,4].forEach(function(n){
+    var btn = document.getElementById('check'+n);
+    var fb = document.getElementById('fb'+n);
+    var card = document.querySelector('[data-qid="'+n+'"]');
+    btn.addEventListener('click', function(){
+      var rows = document.querySelectorAll('#match'+n+' .match-row');
+      var allAnswered = true;
+      var allCorrect = true;
+      rows.forEach(function(row){
+        var sel = row.querySelector('select');
+        var answer = row.dataset.answer;
+        sel.classList.remove('correct','incorrect');
+        if(!sel.value){ allAnswered = false; return; }
+        if(sel.value === answer){
+          sel.classList.add('correct');
+        } else {
+          sel.classList.add('incorrect');
+          allCorrect = false;
+        }
+      });
+      if(!allAnswered){
+        fb.textContent = 'Please choose a match for every row before checking.';
+        fb.className = 'feedback show wrong';
+        return;
+      }
+      fb.textContent = allCorrect
+        ? 'All matches correct. Nice work distinguishing these categories.'
+        : 'A few matches need another look — items marked in red don\'t match yet. Try again.';
+      fb.className = 'feedback show ' + (allCorrect ? 'right' : 'wrong');
+      card.dataset.correctFlag = allCorrect ? 'true' : 'false';
+      totalChecked['q'+n] = true;
+      updateMeter();
+    });
+  });
+
+  // Q5 reveal
+  var revealBtn = document.getElementById('reveal5');
+  var model = document.getElementById('model5');
+  revealBtn.addEventListener('click', function(){
+    model.classList.toggle('show');
+    revealBtn.textContent = model.classList.contains('show') ? 'Hide model answer' : 'Show a model answer';
+  });
+})();
+</script>
+
+</body>
+</html>
