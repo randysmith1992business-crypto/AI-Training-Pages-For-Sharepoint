@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0F3;
+    --card:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#4A5876;
+    --teal:#2F6B69;
+    --teal-dark:#1F4A48;
+    --rule:#D8DCE4;
+    --wrong:#B24B3C;
+    --right-bg:#E7F0EA;
+    --wrong-bg:#F6E9E6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:28px 20px 48px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:26px 26px 22px;
+  }
+  .qhead{
+    display:flex;
+    align-items:flex-start;
+    margin-bottom:18px;
+  }
+  .qnum{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;height:28px;
+    background:var(--ink);
+    color:#fff;
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:14px;
+    border-radius:50%;
+    margin-right:10px;
+    flex-shrink:0;
+  }
+  .qtext{
+    font-family:'Source Serif 4',serif;
+    font-size:18px;
+    font-weight:600;
+    color:var(--ink);
+    padding-top:2px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    padding:13px 16px;
+    border:1.5px solid var(--rule);
+    background:#FBFBFC;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    width:100%;
+  }
+  .option:hover{border-color:var(--teal);}
+  .option.correct{border-color:var(--teal-dark); background:var(--right-bg); font-weight:600;}
+  .option.incorrect{border-color:var(--wrong); background:var(--wrong-bg);}
+  .option[disabled]{cursor:default;}
+  .feedback{
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:7px;
+    font-size:14px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.right{background:var(--right-bg); color:var(--teal-dark); border:1px solid #BFDBCF;}
+  .feedback.wrong{background:var(--wrong-bg); color:var(--wrong); border:1px solid #E6BEB6;}
+  .feedback b{display:block; margin-bottom:4px;}
+  .retry-btn{
+    margin-top:14px;
+    background:none;
+    border:1.5px solid var(--ink-soft);
+    color:var(--ink-soft);
+    padding:8px 14px;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    display:none;
+  }
+  .retry-btn.show{display:inline-block;}
+  .retry-btn:hover{border-color:var(--teal); color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Knowledge Check</div>
+  <div class="card">
+    <div class="qhead">
+      <span class="qnum">?</span>
+      <span class="qtext">A student asks a Peer Coach to use AI to write part of an assignment for them because they are short on time. Based on the guiding principles above, what should the Peer Coach do, and why?</span>
+    </div>
+    <div class="options" id="opts">
+      <button class="option" data-correct="false">Use AI to write the assignment section for the student because helping them save time supports their success.</button>
+      <button class="option" data-correct="true">Explain that AI can support learning but should not complete academic work for the student; instead, offer to help the student brainstorm, organize ideas, or create a study plan.</button>
+      <button class="option" data-correct="false">Tell the student to use AI on their own so the Peer Coach is not directly involved.</button>
+      <button class="option" data-correct="false">Enter the student&rsquo;s assignment details and personal information into an AI tool to get a more accurate response.</button>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="retry-btn" id="retry">Try again</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var opts = document.getElementById('opts').querySelectorAll('.option');
+  var fb = document.getElementById('fb');
+  var retry = document.getElementById('retry');
+
+  function lock(){
+    opts.forEach(function(o){ o.disabled = true; });
+  }
+  function unlock(){
+    opts.forEach(function(o){
+      o.disabled = false;
+      o.classList.remove('correct','incorrect');
+    });
+    fb.className = 'feedback';
+    fb.textContent = '';
+    retry.classList.remove('show');
+  }
+
+  opts.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var isCorrect = btn.dataset.correct === 'true';
+      lock();
+      if(isCorrect){
+        btn.classList.add('correct');
+        fb.innerHTML = '<b>Correct.</b> Time pressure is real, but the Peer Coach\'s role is to protect the student\'s own authorship of their work while still being genuinely helpful. Brainstorming, organizing ideas, or building a study plan gives real support without completing the assignment for them — and it keeps the student\'s personal and assignment details out of an AI tool they haven\'t been cleared to use that way.';
+        fb.className = 'feedback show right';
+      } else {
+        btn.classList.add('incorrect');
+        opts.forEach(function(o){
+          if(o.dataset.correct === 'true') o.classList.add('correct');
+        });
+        fb.innerHTML = '<b>Not quite.</b> The right response supports the student without stepping in to complete their work or exposing their private information. Look at the highlighted option for the reasoning.';
+        fb.className = 'feedback show wrong';
+        retry.classList.add('show');
+      }
+    });
+  });
+
+  retry.addEventListener('click', unlock);
+})();
+</script>
+</body>
+</html>
